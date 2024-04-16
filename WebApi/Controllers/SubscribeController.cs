@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Context;
 using Infrastructure.Dtos;
 using Infrastructure.Entities;
+using Infrastructure.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +9,10 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[UseApiKey]
 public class SubscribeController(ApiContext context) : ControllerBase
 {
-    private readonly ApiContext _context;
+    private readonly ApiContext _context = context;
 
     [HttpPost]
     public async Task<IActionResult> Subscribe(SubscriberDto dto)
@@ -30,6 +32,7 @@ public class SubscribeController(ApiContext context) : ControllerBase
                     Podcasts = dto.Podcasts,
                 });
 
+                await _context.SaveChangesAsync();
                 return Created();
             }
             else
@@ -44,8 +47,20 @@ public class SubscribeController(ApiContext context) : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Unsubscribe()
+    public async Task<IActionResult> Unsubscribe(string email)
     {
-        return Ok();
+        if (ModelState.IsValid)
+        {
+            var subscriberEntity = await _context.Subscribers.FirstOrDefaultAsync(x => x.Email == email);
+            if (subscriberEntity == null)
+            {
+                return NotFound();
+            }
+
+            _context.Remove(subscriberEntity);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        return BadRequest();
     }
 }
