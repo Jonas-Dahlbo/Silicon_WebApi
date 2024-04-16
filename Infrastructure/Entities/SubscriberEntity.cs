@@ -5,7 +5,8 @@ namespace Infrastructure.Entities;
 public class SubscriberEntity
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    
+
+    [StringLength(60)]
     public string Email { get; set; } = null!;
 
     public bool DailyNewsletter { get; set; }
