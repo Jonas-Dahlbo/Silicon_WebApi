@@ -7,4 +7,5 @@ public class ApiContext(DbContextOptions<ApiContext> options) : DbContext(option
 {
     public DbSet<SubscriberEntity> Subscribers { get; set; }
     public DbSet<ContactEntity> Contacts { get; set; }
+    public DbSet<CoursesEntity> Courses { get; set; }
 }
