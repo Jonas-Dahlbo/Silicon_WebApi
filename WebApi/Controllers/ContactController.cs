@@ -9,6 +9,7 @@ namespace WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [UseApiKey]
+
 public class ContactController(ApiContext context) : ControllerBase
 {
     private readonly ApiContext _context = context;
